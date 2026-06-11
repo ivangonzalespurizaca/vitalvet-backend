@@ -1,0 +1,15 @@
+# Compilados de Java
+**/target/
+*.class
+
+# Archivos de configuración de IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+.metadata/
+
+# Sistema y archivos temporales
+.DS_Store
+Thumbs.db
+log/
