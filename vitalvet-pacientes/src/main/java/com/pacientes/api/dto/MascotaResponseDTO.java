@@ -16,5 +16,11 @@ public class MascotaResponseDTO {
     private BigDecimal pesoActual;
     private String fotoUrl;
     private Long idCliente;
+
+    private Long idRaza;
     private String nombreRaza;
+
+    private Long idEspecie;
+    private String nombreEspecie;
+    private boolean activo;
 }

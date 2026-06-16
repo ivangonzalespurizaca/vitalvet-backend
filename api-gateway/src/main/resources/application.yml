@@ -14,10 +14,27 @@ spring:
               predicates:
                 - Path=/api/usuario/auth/**
 
+            - id: MICRO-USUARIO-VETERINARIOS
+              uri: lb://MICRO-USUARIO
+              predicates:
+                - Path=/api/usuario/veterinario/**
+              filters:
+                - AuthenticationFilter
+
             - id: MICRO-USUARIO-PRIVATE
               uri: lb://MICRO-USUARIO
               predicates:
                 - Path=/api/usuario/**
+              filters:
+                - AuthenticationFilter
+
+            # ==========================================
+            # CLIENTE SERVICE (NEGOCIO)
+            # ==========================================
+            - id: MICRO-CLIENTE-PRIVATE
+              uri: lb://MICRO-USUARIO
+              predicates:
+                - Path=/api/cliente/**
               filters:
                 - AuthenticationFilter
 

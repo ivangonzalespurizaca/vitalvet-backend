@@ -26,7 +26,7 @@ public abstract class ICRUDImpl<T,ID> implements ICRUD<T, ID> {
         return getRepository().findAll();
     }
     @Override
-    public T buscarPorCodigo(ID cod) throws Exception {
+    public T buscarPorId(ID cod) throws Exception {
         return getRepository().findById(cod).orElse(null);
     }
 

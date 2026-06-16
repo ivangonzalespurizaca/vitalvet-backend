@@ -16,12 +16,23 @@ public interface MascotaMapper {
     @Mapping(target = "vacunasAplicadas", ignore = true)
     Mascota toEntity(MascotaRequestDTO dto);
 
-    @Mapping(target = "nombreRaza", source = "raza.nombreRaza")
-    MascotaResponseDTO toResponseDTO(Mascota mascota);
-
     @AfterMapping
     default void generarCamposAutomaticos(MascotaRequestDTO dto, @MappingTarget Mascota mascota) {
         mascota.setCodigoMascota("MAS-" + dto.getIdCliente() + "-" + System.currentTimeMillis());
         mascota.setActivo(true);
     }
+
+    @Mapping(target = "idRaza", source = "mascota.raza.idRaza")
+    @Mapping(target = "nombreRaza", source = "mascota.raza.nombreRaza")
+    @Mapping(target = "idEspecie", source = "mascota.raza.especie.idEspecie")
+    @Mapping(target = "nombreEspecie", source = "mascota.raza.especie.nombreEspecie")
+    MascotaResponseDTO toResponseDTO(Mascota mascota);
+
+    @Mapping(target = "idMascota", ignore = true)
+    @Mapping(target = "codigoMascota", ignore = true)
+    @Mapping(target = "idCliente", ignore = true)
+    @Mapping(target = "raza", ignore = true)
+    @Mapping(target = "vacunasAplicadas", ignore = true)
+    @Mapping(target = "activo", ignore = true)
+    void updateEntityFromRequestDto(MascotaRequestDTO dto, @MappingTarget Mascota mascota);
 }

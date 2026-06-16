@@ -16,9 +16,7 @@ public class EmailService {
         message.setTo(emailDestino);
         message.setSubject("Vital Vet - Recuperación de Contraseña");
 
-        // El enlace apuntará a una pantalla de tu Frontend para que ponga la nueva clave
         String urlRecuperacion = "http://localhost:4200/reset-password?token=" + tokenTemporal;
-
         message.setText("Hola, para restablecer tu contraseña en Vital Vet, haz clic en el siguiente enlace:\n" + urlRecuperacion);
 
         mailSender.send(message);

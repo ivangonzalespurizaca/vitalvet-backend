@@ -7,5 +7,5 @@ public interface ICRUD<T, ID> {
     T actualizar(T bean) throws Exception;
     void eliminar(ID cod) throws Exception;
     List<T> listar() throws Exception;
-    T buscarPorCodigo(ID cod) throws Exception;
+    T buscarPorId(ID cod) throws Exception;
 }

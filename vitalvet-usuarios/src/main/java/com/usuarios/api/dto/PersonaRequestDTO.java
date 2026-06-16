@@ -1,23 +1,13 @@
 package com.usuarios.api.dto;
 
 import com.usuarios.api.entity.enums.Genero;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class RegistroClienteRequest {
-    @NotBlank(message = "El email es obligatorio")
-    @Email(message = "Debe ingresar un email válido")
-    private String email;
-
-    @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
-    private String contrasenia;
-
-    // Datos personales (Paso 2)
+public class PersonaRequestDTO {
     @NotBlank(message = "El nombre es obligatorio")
     private String nombres;
 

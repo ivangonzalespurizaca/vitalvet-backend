@@ -25,7 +25,7 @@ public class Mascota {
     @Column(name = "id_mascota")
     private Long idMascota;
 
-    @Column(name = "codigo_mascota", nullable = false, length = 20, unique = true)
+    @Column(name = "codigo_mascota", nullable = false, length = 50, unique = true)
     private String codigoMascota;
 
     @Column(name = "id_cliente", nullable = false)

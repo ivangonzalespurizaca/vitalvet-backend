@@ -1,6 +1,6 @@
-package com.pacientes.api.dto;
+package com.usuarios.api.dto;
 
-import com.pacientes.api.entity.enums.SexoMascota;
+import com.usuarios.api.entity.enums.SexoMascota;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

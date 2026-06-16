@@ -1,11 +1,13 @@
 package com.usuarios.api.services.impl;
 
 import com.usuarios.api.config.JwtUtil;
-import com.usuarios.api.dto.LoginRequest;
-import com.usuarios.api.dto.RegistroClienteRequest;
+import com.usuarios.api.dto.LoginRequestDTO;
+import com.usuarios.api.dto.PersonaRequestDTO;
+import com.usuarios.api.dto.RegistroClienteRequestDTO;
 import com.usuarios.api.entity.Persona;
 import com.usuarios.api.entity.Usuario;
 import com.usuarios.api.entity.enums.Rol;
+import com.usuarios.api.mapper.PersonaMapper;
 import com.usuarios.api.repository.PersonaRepository;
 import com.usuarios.api.repository.UsuarioRepository;
 import com.usuarios.api.services.AuthService;
@@ -42,13 +44,16 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private EmailService emailService;
 
-    @Override
-    public String login(LoginRequest loginRequest) {
+    @Autowired
+    private PersonaMapper personaMapper;
 
-        Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail())
+    @Override
+    public String login(LoginRequestDTO loginRequestDTO) {
+
+        Usuario usuario = usuarioRepository.findByEmail(loginRequestDTO.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Credenciales incorrectas (Email no encontrado)"));
 
-        if (!passwordEncoder.matches(loginRequest.getContrasenia(), usuario.getContrasenia())) {
+        if (!passwordEncoder.matches(loginRequestDTO.getContrasenia(), usuario.getContrasenia())) {
             throw new BadCredentialsException("Credenciales incorrectas (Contraseña inválida)");
         }
 
@@ -57,30 +62,32 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public Persona registrarCliente(RegistroClienteRequest dto) {
-        if (usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new BusinessException("El correo electrónico ya se encuentra registrado.");
+    public Persona registrarCliente(PersonaRequestDTO dto) {
+
+        if (personaRepository.existsByDni(dto.getDni())) {
+            throw new BusinessException("El cliente con el DNI " + dto.getDni() + " ya está registrado.");
         }
 
-        Persona persona = new Persona();
-        persona.setNombres(dto.getNombres());
-        persona.setApellidos(dto.getApellidos());
-        persona.setDni(dto.getDni());
-        persona.setCelular(dto.getCelular());
-        persona.setGenero(dto.getGenero());
+        Persona persona = personaMapper.toEntity(dto);
         persona.setRol(Rol.CLIENTE);
         persona.setActivo(true);
-        persona.setCodigoPersona("CLI-" + (System.currentTimeMillis() / 100000));
+        persona.setCodigoPersona("CLI-" + dto.getDni());
 
         Persona personaGuardada = personaRepository.save(persona);
 
-        Usuario usuario = new Usuario();
-        usuario.setEmail(dto.getEmail());
-        usuario.setContrasenia(passwordEncoder.encode(dto.getContrasenia()));
-        usuario.setFechaCreacion(java.time.LocalDateTime.now());
-        usuario.setPersona(personaGuardada);
+        if (dto instanceof RegistroClienteRequestDTO webDto) {
 
-        usuarioRepository.save(usuario);
+            if (usuarioRepository.findByEmail(webDto.getEmail().trim()).isPresent()) {
+                throw new BusinessException("El correo electrónico ya se encuentra registrado.");
+            }
+
+            Usuario usuario = new Usuario();
+            usuario.setEmail(webDto.getEmail().trim());
+            usuario.setContrasenia(passwordEncoder.encode(webDto.getContrasenia()));
+            usuario.setFechaCreacion(java.time.LocalDateTime.now());
+            usuario.setPersona(personaGuardada);
+            usuarioRepository.save(usuario);
+        }
 
         return personaGuardada;
     }
@@ -110,7 +117,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         usuario.setContrasenia(passwordEncoder.encode(nuevaContrasenia));
-
         usuario.setTokenRecuperacion(null);
         usuario.setFechaExpiracionToken(null);
 
