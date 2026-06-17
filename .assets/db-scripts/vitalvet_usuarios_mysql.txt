@@ -1,4 +1,5 @@
-CREATE DATABASE IF NOT EXISTS vitalvet_usuarios;
+DROP DATABASE IF EXISTS vitalvet_usuarios;
+CREATE DATABASE vitalvet_usuarios;
 USE vitalvet_usuarios;
 
 -- ============================================================================
@@ -62,50 +63,36 @@ CREATE INDEX idx_usuario_fecha ON usuario(fecha_creacion);
 CREATE INDEX idx_persona_rol ON persona(rol);
 CREATE INDEX idx_persona_codigo ON persona(codigo_persona);
 
-
 -- ============================================================================
--- DATA DEMO / INSERTS DE PRUEBA
+-- DATA DEMO / INSERTS DE PRUEBA (Sincronizado con Agenda / Finanzas)
 -- ============================================================================
 
--- 1. Registro de Especialidades (Requerido para el rol Veterinario)
-INSERT INTO especialidad (nombre_especialidad, activo) 
-VALUES ('Cirugía de Mascotas', TRUE);
+-- INSERTS DE USUARIOS
+INSERT INTO especialidad (id_especialidad, nombre_especialidad, activo) 
+VALUES (1, 'Cirugía de Mascotas', TRUE), (2, 'Odontología Veterinaria', TRUE);
 
--- 2. Registro de Datos Personales (Tabla persona)
--- Usuario 1: Administrador (Óscar Iván)
-INSERT INTO persona (codigo_persona, nombres, apellidos, dni, celular, foto_url, genero, rol, activo)
-VALUES ('ADM-2026-001', 'Oscar Ivan', 'Gonzales Purizaca', '78954415', '988512254', 'https://res.cloudinary.com/dfid8iuf3/image/upload/v1771809505/jqj6icolc2l13alwcoi3.jpg', 'MASCULINO', 'ADMINISTRADOR', TRUE);
+INSERT INTO persona (id_persona, codigo_persona, nombres, apellidos, dni, celular, foto_url, genero, rol, activo) VALUES 
+(1, 'ADM-2026-001', 'Oscar Ivan', 'Gonzales Purizaca', '78954415', '988512254', 'https://res.cloudinary.com/dfid8iuf3/image/upload/v1771809505/jqj6icolc2l13alwcoi3.jpg', 'MASCULINO', 'ADMINISTRADOR', TRUE),
+(2, 'VET-2026-001', 'Ana Maria', 'Gomez Flores', '45871236', '941258763', 'https://res.cloudinary.com/dfid8iuf3/image/upload/v1777320913/pgzs7yor2izqr4oo0rvz.jpg', 'FEMENINO', 'VETERINARIO', TRUE),
+(3, 'VET-2026-002', 'Carlos Alberto', 'Luna Rios', '32659874', '955123456', 'https://res.cloudinary.com/dfid8iuf3/image/upload/v1771788276/napprliapuxtwmchwek4.jpg', 'MASCULINO', 'VETERINARIO', TRUE),
+(4, 'CLI-2026-001', 'Carlos', 'Mendoza', '89304958', '963258741', 'https://res.cloudinary.com/dfid8iuf3/image/upload/v1771788276/napprliapuxtwmchwek4.jpg', 'MASCULINO', 'CLIENTE', TRUE),
+(7, 'CLI-2026-002', 'Jorge Luis', 'Perez Castro', '12457896', '961234567', null, 'MASCULINO', 'CLIENTE', TRUE),
+(9, 'CLI-2026-003', 'Maria Elena', 'Sánchez Diaz', '45781293', '987654321', null, 'FEMENINO', 'CLIENTE', TRUE);
 
--- Usuario 2: Veterinario (Ana María)
-INSERT INTO persona (codigo_persona, nombres, apellidos, dni, celular, foto_url, genero, rol, activo)
-VALUES ('VET-2026-001', 'Ana Maria', 'Gomez Flores', '45871236', '941258763', 'https://res.cloudinary.com/dfid8iuf3/image/upload/v1777320913/pgzs7yor2izqr4oo0rvz.jpg', 'FEMENINO', 'VETERINARIO', TRUE);
+INSERT INTO veterinario (id_veterinario, id_persona, id_especialidad, num_colegiatura) VALUES 
+(1, 2, 1, 'CMP 84920'), (2, 3, 2, 'CMP 91524');
 
--- Usuario 3: Cliente (Jorge Luis)
-INSERT INTO persona (codigo_persona, nombres, apellidos, dni, celular, foto_url, genero, rol, activo)
-VALUES ('CLI-2026-001', 'Jorge Luis', 'Perez Castro', '12457896', '963258741', 'https://res.cloudinary.com/dfid8iuf3/image/upload/v1771788276/napprliapuxtwmchwek4.jpg', 'MASCULINO', 'CLIENTE', TRUE);
-
--- 3. Registro de Perfiles Profesionales (Tabla veterinario)
--- Enlazamos a Ana Maria (id_persona = 2) con la especialidad creada (id_especialidad = 1)
-INSERT INTO veterinario (id_persona, id_especialidad, num_colegiatura)
-VALUES (2, 1, 'CMP 84920');
-
--- 4. Registro de Credenciales de Acceso (Tabla usuario)
--- Nota: Campos token y fecha_expiracion quedan inicialmente en NULL de manera automática
-
--- Cuenta para el Administrador (Óscar Iván) -> id_persona = 1
-INSERT INTO usuario (id_persona, email, contrasenia)
-VALUES (1, 'ivangonzalespurizaca@gmail.com', '$2a$10$onmA2yAqqwMDTQX9RHoUBuxvxGkTDIdqe/fhZlwpMHRb4c3DfKCRK'); -- admin123
-
--- Cuenta para la Veterinaria (Ana María) -> id_persona = 2
-INSERT INTO usuario (id_persona, email, contrasenia)
-VALUES (2, 'ana.gomez@vitalvet.com', '$2a$10$zR7RarWwiu/Rd49O04GOEOwjpQK/B4Kk7L9Jr2BY/9fYsf4/y9uG.'); -- vet123
-
--- Cuenta para el Cliente (Jorge Luis) -> id_persona = 3
-INSERT INTO usuario (id_persona, email, contrasenia)
-VALUES (3, 'jorge.perez@gmail.com', '$2a$10$I1Vp.2y2XqXSOaO/llDuAuVfBx4JKIr2Y8P2kP6CKlp5P5hyV60xa'); -- cliente123
+INSERT INTO usuario (id_persona, email, contrasenia) VALUES 
+(1, 'ivangonzalespurizaca@gmail.com', '$2a$10$onmA2yAqqwMDTQX9RHoUBuxvxGkTDIdqe/fhZlwpMHRb4c3DfKCRK'), 
+(2, 'ana.gomez@vitalvet.com', '$2a$10$zR7RarWwiu/Rd49O04GOEOwjpQK/B4Kk7L9Jr2BY/9fYsf4/y9uG.'),          
+(4, 'carlos.mendoza@gmail.com', '$2a$10$I1Vp.2y2XqXSOaO/llDuAuVfBx4JKIr2Y8P2kP6CKlp5P5hyV60xa'),        
+(7, 'jorge.perez@gmail.com', '$2a$10$I1Vp.2y2XqXSOaO/llDuAuVfBx4JKIr2Y8P2kP6CKlp5P5hyV60xa'),
+(9, 'maria.sanchez@gmail.com', '$2a$10$I1Vp.2y2XqXSOaO/llDuAuVfBx4JKIr2Y8P2kP6CKlp5P5hyV60xa');
 
 
 -- ============================================================================
 -- VERIFICACIÓN FINAL
 -- ============================================================================
+SELECT * FROM persona;
 SELECT * FROM usuario;
+SELECT * FROM veterinario;

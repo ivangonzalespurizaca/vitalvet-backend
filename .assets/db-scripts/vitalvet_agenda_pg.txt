@@ -1,4 +1,5 @@
-CREATE SCHEMA IF NOT EXISTS agenda;
+DROP SCHEMA IF EXISTS agenda CASCADE;
+CREATE SCHEMA agenda;
 
 -- ============================================================================
 -- TIPOS ENUM NATIVOS (Exclusivos de PostgreSQL)
@@ -9,7 +10,7 @@ BEGIN
         CREATE TYPE agenda.tipo_dia_semana AS ENUM ('LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO');
     END IF;
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tipo_estado_cita') THEN
-        CREATE TYPE agenda.tipo_estado_cita AS ENUM ('PENDIENTE', 'PAGADA', 'COMPLETADA', 'CANCELADA', 'VENCIDA');
+        CREATE TYPE agenda.tipo_estado_cita AS ENUM ('PAGADA', 'COMPLETADA', 'CANCELADA', 'VENCIDA');
     END IF;
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tipo_comprobante') THEN
         CREATE TYPE agenda.tipo_comprobante AS ENUM ('BOLETA', 'FACTURA', 'RECIBO_INTERNO');
@@ -37,12 +38,12 @@ CREATE TABLE agenda.horario_atencion (
 CREATE TABLE agenda.cita (
     id_cita BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     codigo_cita VARCHAR(20) NOT NULL UNIQUE,
-    id_mascota BIGINT NOT NULL,                      
+    id_mascota BIGINT NOT NULL,                     
     id_veterinario BIGINT NOT NULL,                  
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
     motivo VARCHAR(255),
-    estado agenda.tipo_estado_cita DEFAULT 'PENDIENTE',
+    estado agenda.tipo_estado_cita DEFAULT 'PAGADA',
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -60,17 +61,40 @@ CREATE TABLE agenda.comprobante_pago (
     monto_total DECIMAL(10, 2) NOT NULL,
     metodo_pago agenda.tipo_metodo_pago NOT NULL,
     fecha_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- Conexiones físicas para el diagrama:
     CONSTRAINT fk_pago_cita FOREIGN KEY (id_cita) REFERENCES agenda.cita(id_cita) ON DELETE RESTRICT
 );
 
 -- ============================================================================
--- ÍNDICES DE OPTIMIZACIÓN (Esenciales para búsquedas y UI)
+-- ÍNDICES DE OPTIMIZACIÓN
 -- ============================================================================
 CREATE INDEX idx_cita_fecha_vet ON agenda.cita(fecha, id_veterinario); 
 CREATE INDEX idx_cita_estado ON agenda.cita(estado);                  
 CREATE INDEX idx_cita_mascota ON agenda.cita(id_mascota);     
 CREATE INDEX idx_pago_cliente ON agenda.comprobante_pago(id_cliente);   
-
 CREATE INDEX idx_cita_codigo ON agenda.cita(codigo_cita);
 CREATE INDEX idx_pago_codigo ON agenda.comprobante_pago(codigo_comprobante);
+
+-- ============================================================================
+-- DATA DE PRUEBA (DATA SEEDING)
+-- ============================================================================
+
+INSERT INTO agenda.horario_atencion (id_veterinario, dia_semana, hora_inicio, hora_fin, activo, duracion_minutos) VALUES 
+(1, 'LUNES',     '08:00:00', '13:00:00', TRUE, 60),
+(1, 'MARTES',    '08:00:00', '13:00:00', TRUE, 60),
+(1, 'MIERCOLES', '14:00:00', '19:00:00', TRUE, 45),
+(1, 'JUEVES',    '08:00:00', '13:00:00', TRUE, 60),
+(1, 'VIERNES',   '14:00:00', '19:00:00', TRUE, 60);
+
+INSERT INTO agenda.cita (codigo_cita, id_mascota, id_veterinario, fecha, hora, motivo, estado, fecha_creacion) VALUES
+('CITA-001', 10, 1, '2026-05-25', '09:12:00', 'Servicio de Cita Médica Especializada', 'PAGADA', '2026-05-24 18:00:00'),
+('CITA-002', 10, 1, '2026-05-25', '15:15:00', 'Control de Vacunas Anual', 'PAGADA', '2026-05-24 19:30:00'),
+('CITA-003', 11, 1, '2026-06-10', '10:00:00', 'Consulta General por malestar', 'PAGADA', '2026-06-09 08:15:00'),
+('CITA-004', 10, 1, '2026-06-16', '16:00:00', 'Cirugía menor - Esterilización', 'PAGADA', '2026-06-15 14:00:00');
+
+INSERT INTO agenda.comprobante_pago (id_cita, id_cliente, tipo_documento, codigo_comprobante, monto_subtotal, monto_impuesto, monto_total, metodo_pago, fecha_pago) VALUES
+(1, 4, 'BOLETA', 'B001-000241', 67.80,  12.20, 80.00,  'TARJETA_DEBITO', '2026-05-25 09:12:00'),
+(2, 4, 'BOLETA', 'B001-000242', 67.80,  12.20, 80.00,  'EFECTIVO',       '2026-05-25 15:15:00'),
+(4, 4, 'BOLETA', 'B001-000243', 296.61, 53.39, 350.00, 'TRANSFERENCIA', '2026-06-16 16:00:00'),
+(3, 7, 'FACTURA', 'F001-000089', 101.69, 18.31, 120.00, 'YAPE_PLIN',     '2026-06-10 10:30:00');
+
+SELECT * FROM agenda.comprobante_pago;
