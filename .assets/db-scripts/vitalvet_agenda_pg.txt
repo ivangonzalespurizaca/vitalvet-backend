@@ -2,32 +2,13 @@ DROP SCHEMA IF EXISTS agenda CASCADE;
 CREATE SCHEMA agenda;
 
 -- ============================================================================
--- TIPOS ENUM NATIVOS (Exclusivos de PostgreSQL)
--- ============================================================================
-DO $$ 
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tipo_dia_semana') THEN
-        CREATE TYPE agenda.tipo_dia_semana AS ENUM ('LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO');
-    END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tipo_estado_cita') THEN
-        CREATE TYPE agenda.tipo_estado_cita AS ENUM ('PAGADA', 'COMPLETADA', 'CANCELADA', 'VENCIDA');
-    END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tipo_comprobante') THEN
-        CREATE TYPE agenda.tipo_comprobante AS ENUM ('BOLETA', 'FACTURA', 'RECIBO_INTERNO');
-    END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tipo_metodo_pago') THEN
-        CREATE TYPE agenda.tipo_metodo_pago AS ENUM ('EFECTIVO', 'TARJETA_CREDITO', 'TARJETA_DEBITO', 'TRANSFERENCIA', 'YAPE_PLIN');
-    END IF;
-END $$;
-
--- ============================================================================
 -- TABLAS DEL DOMINIO: AGENDA Y CITAS
 -- ============================================================================
 
 CREATE TABLE agenda.horario_atencion (
     id_horario BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     id_veterinario BIGINT NOT NULL,
-    dia_semana agenda.tipo_dia_semana NOT NULL,
+    dia_semana VARCHAR(20) NOT NULL,
     hora_inicio TIME NOT NULL,
     hora_fin TIME NOT NULL,
     activo BOOLEAN DEFAULT TRUE,
@@ -43,7 +24,7 @@ CREATE TABLE agenda.cita (
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
     motivo VARCHAR(255),
-    estado agenda.tipo_estado_cita DEFAULT 'PAGADA',
+    estado VARCHAR(30) DEFAULT 'PAGADA', 
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -54,12 +35,12 @@ CREATE TABLE agenda.comprobante_pago (
     id_comprobante BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     id_cita BIGINT NOT NULL UNIQUE,
     id_cliente BIGINT NOT NULL,
-    tipo_documento agenda.tipo_comprobante NOT NULL DEFAULT 'RECIBO_INTERNO',
+    tipo_documento VARCHAR(30) NOT NULL DEFAULT 'RECIBO_INTERNO', 
     codigo_comprobante VARCHAR(50) NOT NULL UNIQUE,
     monto_subtotal DECIMAL(10, 2) NOT NULL,
     monto_impuesto DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
     monto_total DECIMAL(10, 2) NOT NULL,
-    metodo_pago agenda.tipo_metodo_pago NOT NULL,
+    metodo_pago VARCHAR(30) NOT NULL,
     fecha_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_pago_cita FOREIGN KEY (id_cita) REFERENCES agenda.cita(id_cita) ON DELETE RESTRICT
 );
@@ -86,10 +67,10 @@ INSERT INTO agenda.horario_atencion (id_veterinario, dia_semana, hora_inicio, ho
 (1, 'VIERNES',   '14:00:00', '19:00:00', TRUE, 60);
 
 INSERT INTO agenda.cita (codigo_cita, id_mascota, id_veterinario, fecha, hora, motivo, estado, fecha_creacion) VALUES
-('CITA-001', 10, 1, '2026-05-25', '09:12:00', 'Servicio de Cita Médica Especializada', 'PAGADA', '2026-05-24 18:00:00'),
-('CITA-002', 10, 1, '2026-05-25', '15:15:00', 'Control de Vacunas Anual', 'PAGADA', '2026-05-24 19:30:00'),
-('CITA-003', 11, 1, '2026-06-10', '10:00:00', 'Consulta General por malestar', 'PAGADA', '2026-06-09 08:15:00'),
-('CITA-004', 10, 1, '2026-06-16', '16:00:00', 'Cirugía menor - Esterilización', 'PAGADA', '2026-06-15 14:00:00');
+('CITA-001', 1, 1, '2026-05-25', '09:12:00', 'Servicio de Cita Médica Especializada', 'COMPLETADA', '2026-05-24 18:00:00'),
+('CITA-002', 2, 1, '2026-05-25', '15:15:00', 'Control de Vacunas Anual', 'COMPLETADA', '2026-05-24 19:30:00'),
+('CITA-003', 1, 1, '2026-06-10', '10:00:00', 'Consulta General por malestar', 'PAGADA', '2026-06-09 08:15:00'),
+('CITA-004', 2, 2, '2026-06-16', '16:00:00', 'Cirugía menor - Esterilización', 'PAGADA', '2026-06-15 14:00:00');
 
 INSERT INTO agenda.comprobante_pago (id_cita, id_cliente, tipo_documento, codigo_comprobante, monto_subtotal, monto_impuesto, monto_total, metodo_pago, fecha_pago) VALUES
 (1, 4, 'BOLETA', 'B001-000241', 67.80,  12.20, 80.00,  'TARJETA_DEBITO', '2026-05-25 09:12:00'),
@@ -98,3 +79,5 @@ INSERT INTO agenda.comprobante_pago (id_cita, id_cliente, tipo_documento, codigo
 (3, 7, 'FACTURA', 'F001-000089', 101.69, 18.31, 120.00, 'YAPE_PLIN',     '2026-06-10 10:30:00');
 
 SELECT * FROM agenda.comprobante_pago;
+
+SELECT * FROM agenda.cita;
