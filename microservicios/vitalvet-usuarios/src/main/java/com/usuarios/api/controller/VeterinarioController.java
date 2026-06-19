@@ -120,11 +120,11 @@ public class VeterinarioController {
         ));
     }
 
-    @GetMapping("/cabecera/{id}")
-    public ResponseEntity<?> obtenerCabecera(@PathVariable Long id) throws Exception{
-        Veterinario veterinario = vService.buscarPorId(id);
+    @GetMapping("/cabecera/{idVeterinario}")
+    public ResponseEntity<?> obtenerCabecera(@PathVariable Long idVeterinario) throws Exception{
+        Veterinario veterinario = vService.buscarPorId(idVeterinario);
         if(veterinario==null){
-            throw new ModeloNotFoundException("El veterinario con ID: " + id + " no existe");
+            throw new ModeloNotFoundException("El veterinario con ID: " + idVeterinario + " no existe");
         }
         return ResponseEntity.ok(vMapper.toHeaderDTO(veterinario));
     }

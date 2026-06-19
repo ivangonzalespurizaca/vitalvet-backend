@@ -9,6 +9,8 @@ public interface PersonaService extends ICRUD<Persona, Long> {
 
     boolean existeDni(String dni);
 
+    Persona buscarPorDni(String dni);
+
     int obtenerTotalMascotas(Long id);
 
 }

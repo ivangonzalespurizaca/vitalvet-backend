@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
     Optional<Consulta> findByIdCita(Long idCita);
+    boolean existsByIdCita(Long idCita);
 }

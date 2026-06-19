@@ -51,7 +51,7 @@ public interface VeterinarioMapper {
     @Mapping(target = "especialidad", ignore = true)
     void updateVeterinarioFromDto(VeterinarioRequestDTO dto, @MappingTarget Veterinario veterinario);
 
-
+    @Mapping(target = "idVeterinario", source = "idVeterinario")
     @Mapping(target = "dni", source = "persona.dni")
     @Mapping(target = "nombreCompleto", expression = "java(veterinario.getPersona().getNombres() + \" \" + veterinario.getPersona().getApellidos())")
     @Mapping(target = "especialidad", expression = "java(veterinario.getEspecialidad() != null ? veterinario.getEspecialidad().getNombreEspecialidad() : \"GENERAL\")")

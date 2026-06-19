@@ -134,4 +134,21 @@ public class ClienteController {
                 true, "¡Datos del cliente actualizados con éxito!", responseDTO
         ));
     }
+
+    @GetMapping("/interno/dni/{dni}")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<ClienteResponse> obtenerPorDniInterno(
+            @PathVariable("dni") String dni){
+
+        Persona cliente = personaService.buscarPorDni(dni.trim());
+
+        if (cliente == null) {
+            throw new ModeloNotFoundException("Cliente con número de DNI " + dni + " no encontrado en el sistema.");
+        }
+
+        ClienteResponse responseDTO = personaMapper.toClienteResponseDTO(cliente);
+        responseDTO.setTotalMascotas(personaService.obtenerTotalMascotas(cliente.getIdPersona()));
+
+        return ResponseEntity.ok(responseDTO);
+    }
 }

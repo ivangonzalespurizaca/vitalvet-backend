@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/paciente/mascota")
@@ -84,7 +85,7 @@ public class MascotaController {
     }
 
     @GetMapping("/cliente/{idCliente}")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'VETERINARIO', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'VETERINARIO')")
     public ResponseEntity<ApiResponse<List<MascotaResponseDTO>>> listarPorCliente(@PathVariable("idCliente") Long idCliente) {
 
         List<Mascota> listaEntidades = mascotaService.listarMascotasPorCliente(idCliente);
@@ -99,6 +100,31 @@ public class MascotaController {
                 listaDTO
         ));
     }
+
+    @GetMapping("/mis-mascotas")
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity<ApiResponse<List<MascotaResponseDTO>>> listarMisMascotas(
+            org.springframework.security.core.Authentication authentication) {
+
+        Long idCliente = null;
+
+        if (authentication.getDetails() instanceof Map<?, ?> claims) {
+            Object idObject = claims.containsKey("idPersona") ? claims.get("idPersona") : claims.get("idpersona");
+            if (idObject != null) {
+                idCliente = Long.valueOf(idObject.toString());
+            }
+        }
+
+        List<Mascota> listaEntidades = mascotaService.listarMascotasPorCliente(idCliente);
+        List<MascotaResponseDTO> listaDTO = listaEntidades.stream()
+                .map(mascotaMapper::toResponseDTO)
+                .toList();
+
+        return ResponseEntity.ok(new ApiResponse<>(
+                true, "¡Tu historial de mascotas ha sido recuperado con éxito!", listaDTO
+        ));
+    }
+
 
     @PutMapping("/editar/{idMascota}")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'VETERINARIO', 'CLIENTE')")
@@ -150,4 +176,5 @@ public class MascotaController {
         );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
 }

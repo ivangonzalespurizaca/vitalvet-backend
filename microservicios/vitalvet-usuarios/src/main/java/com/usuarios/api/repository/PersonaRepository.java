@@ -20,4 +20,6 @@ public interface PersonaRepository extends JpaRepository<Persona, Long> {
 
     boolean existsByDni(String dni);
 
+    Persona findByDni(String dni);
+
 }

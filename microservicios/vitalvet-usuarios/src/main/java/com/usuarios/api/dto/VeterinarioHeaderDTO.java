@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VeterinarioHeaderDTO {
+    private Long idVeterinario;
     private String dni;
     private String nombreCompleto;
     private String especialidad;

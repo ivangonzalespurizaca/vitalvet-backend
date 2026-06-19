@@ -18,4 +18,5 @@ public class CitaPanelResponse extends CitaResponseDTO {
     private String nombrePropietario;
     private String dniPropietario;
     private String nombreMedico;
+    private Long idCliente;
 }

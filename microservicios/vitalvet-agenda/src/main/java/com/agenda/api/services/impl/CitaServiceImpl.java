@@ -155,7 +155,7 @@ public class CitaServiceImpl extends ICRUDImpl<Cita, Long> implements CitaServic
     }
 
     @Override
-    public List<CitaPanelResponse> listarCitasPanelPrincipal(TipoEstadoCita estado, String criterio) {
+    public List<CitaPanelResponse> listarCitasPanelPrincipal(TipoEstadoCita estado, String criterio, Long idCliente, Long idVeterinario) {
 
         List<Cita> citasBase = (estado == null)
                 ? citaRepository.findAllByOrderByFechaDescHoraAsc()
@@ -164,22 +164,29 @@ public class CitaServiceImpl extends ICRUDImpl<Cita, Long> implements CitaServic
         return citasBase.stream()
                 .map(cita -> {
                     CitaPanelResponse dto = citaMapper.toPanelResponseDTO(cita);
+                    try {
+                        MascotaResponseDTO mascotaInfo = mascotaClient.obtenerDetalleMascota(cita.getIdMascota());
+                        ClienteResponseDTO propietarioInfo = clienteClient.obtenerDetalleCliente(mascotaInfo.getIdCliente());
+                        VeterinarioHeaderDTO medicoInfo = veterinarioClient.obtenerCabecera(cita.getIdVeterinario());
 
-                    MascotaResponseDTO mascotaInfo = mascotaClient.obtenerDetalleMascota(cita.getIdMascota());
-                    ClienteResponseDTO propietarioInfo = clienteClient.obtenerDetalleCliente(mascotaInfo.getIdCliente());
-                    VeterinarioHeaderDTO medicoInfo = veterinarioClient.obtenerCabecera(cita.getIdVeterinario());
-
-                    dto.setNombreMascota(mascotaInfo.getNombreMascota());
-                    dto.setRazaMascota(mascotaInfo.getNombreRaza());
-                    dto.setNombrePropietario(propietarioInfo.getNombres() + " " +propietarioInfo.getApellidos());
-                    dto.setDniPropietario(propietarioInfo.getDni());
-                    dto.setNombreMedico(medicoInfo.getNombreCompleto());
+                        dto.setNombreMascota(mascotaInfo.getNombreMascota());
+                        dto.setRazaMascota(mascotaInfo.getNombreRaza());
+                        dto.setNombrePropietario(propietarioInfo.getNombres() + " " + propietarioInfo.getApellidos());
+                        dto.setDniPropietario(propietarioInfo.getDni());
+                        dto.setNombreMedico(medicoInfo.getNombreCompleto());
+                        dto.setIdCliente(propietarioInfo.getIdPersona());
+                        dto.setIdVeterinario(medicoInfo.getIdVeterinario());
+                    } catch (Exception e) {
+                        System.err.println("Error de sincronización Feign para la cita ID: " + cita.getIdCita());
+                    }
                     return dto;
                 })
+                .filter(dto -> idCliente == null || (dto.getIdCliente() != null && dto.getIdCliente().equals(idCliente)))
                 .filter(dto -> criterio == null || criterio.isBlank() ||
-                        dto.getNombreMascota().toLowerCase().contains(criterio.toLowerCase()) ||
-                        dto.getNombrePropietario().toLowerCase().contains(criterio.toLowerCase()) ||
-                        dto.getDniPropietario().contains(criterio))
+                        (dto.getNombreMascota() != null && dto.getNombreMascota().toLowerCase().contains(criterio.toLowerCase())) ||
+                        (dto.getNombrePropietario() != null && dto.getNombrePropietario().toLowerCase().contains(criterio.toLowerCase())) ||
+                        (dto.getDniPropietario() != null && dto.getDniPropietario().contains(criterio)))
+                .filter(dto -> idVeterinario == null || (dto.getIdVeterinario() != null && dto.getIdVeterinario().equals(idVeterinario)))
                 .toList();
     }
 
@@ -213,6 +220,15 @@ public class CitaServiceImpl extends ICRUDImpl<Cita, Long> implements CitaServic
                 .nombreMedico(medicoInfo.getNombreCompleto())
                 .consulta(consultaDto)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void cambiarEstadoCompletadoInterno(Long idCita) {
+        Cita cita = citaRepository.findById(idCita)
+                .orElseThrow(() -> new BusinessException("Error Interno: No se encontró la cita con ID " + idCita + " para actualizar su estado."));
+        cita.setEstado(TipoEstadoCita.COMPLETADA);
+        citaRepository.save(cita);
     }
 
     private String generarCodigoUnicoCita(LocalDate fecha) {
@@ -269,6 +285,45 @@ public class CitaServiceImpl extends ICRUDImpl<Cita, Long> implements CitaServic
         Long totalComprobantesTipo = comprobanteRepository.countByTipoDocumento(TipoComprobante.valueOf(tipoDoc));
         Long siguienteCorrelativo = totalComprobantesTipo + 1;
         return String.format("%s-%06d", prefijo, siguienteCorrelativo);
+    }
+
+    @Override
+    public List<AgendaBloqueResponseDTO> obtenerAgendaDiariaVeterinario(Long idVeterinario, LocalDate fecha) {
+        List<SlotDTO> slotsBase = this.obtenerHorasDisponibles(idVeterinario, fecha);
+        List<CitaPanelResponse> citasMapeadas = this.listarCitasPanelPrincipal(null, null, null, idVeterinario)
+                .stream()
+                .filter(c -> c.getFecha().isEqual(fecha))
+                .toList();
+
+        return slotsBase.stream().map(slot -> {
+
+            Optional<CitaPanelResponse> citaOcupada = citasMapeadas.stream()
+                    .filter(c -> c.getHora().equals(slot.getHora()))
+                    .findFirst();
+
+            if (citaOcupada.isPresent()) {
+                CitaPanelResponse infoCita = citaOcupada.get();
+
+                String horaFormato = slot.getHora().toString() + (slot.getHora().getHour() < 12 ? " AM" : " PM");
+
+                return AgendaBloqueResponseDTO.builder()
+                        .hora(horaFormato)
+                        .disponible(false)
+                        .idCita(infoCita.getIdCita())
+                        .nombreMascota(infoCita.getNombreMascota())
+                        .razaMascota(infoCita.getRazaMascota())
+                        .nombrePropietario(infoCita.getNombrePropietario())
+                        .motivoConsulta(infoCita.getMotivo())
+                        .build();
+            } else {
+                String horaFormato = slot.getHora().toString() + (slot.getHora().getHour() < 12 ? " AM" : " PM");
+
+                return AgendaBloqueResponseDTO.builder()
+                        .hora(horaFormato)
+                        .disponible(true)
+                        .build();
+            }
+        }).toList();
     }
 
 }

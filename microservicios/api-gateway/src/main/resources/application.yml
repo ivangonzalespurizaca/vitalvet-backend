@@ -19,6 +19,13 @@ spring:
               predicates:
                 - Path=/api/usuario/auth/**
 
+            - id: MICRO-USUARIO-ESPECIALIDADES
+              uri: lb://MICRO-USUARIO
+              predicates:
+                - Path=/api/usuario/especialidad/**
+              filters:
+                - AuthenticationFilter
+
             - id: MICRO-USUARIO-VETERINARIOS
               uri: lb://MICRO-USUARIO
               predicates:
@@ -36,6 +43,11 @@ spring:
             # ==========================================
             # CLIENTE SERVICE (NEGOCIO)
             # ==========================================
+            - id: MICRO-CLIENTE-INTERNO
+              uri: lb://MICRO-USUARIO
+              predicates:
+                - Path=/api/cliente/interno/**
+
             - id: MICRO-CLIENTE-PRIVATE
               uri: lb://MICRO-USUARIO
               predicates:
@@ -46,6 +58,10 @@ spring:
             # =========================
             # AGENDA SERVICE
             # =========================
+            - id: MICRO-AGENDA-INTERNO
+              uri: lb://MICRO-AGENDA
+              predicates:
+                - Path=/api/agenda/cita/interno/**
 
             - id: MICRO-AGENDA-PRIVATE
               uri: lb://MICRO-AGENDA

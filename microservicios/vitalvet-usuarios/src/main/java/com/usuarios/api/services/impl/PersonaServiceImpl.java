@@ -35,6 +35,11 @@ public class PersonaServiceImpl extends ICRUDImpl<Persona, Long> implements Pers
     }
 
     @Override
+    public Persona buscarPorDni(String dni) {
+        return repo.findByDni(dni);
+    }
+
+    @Override
     public int obtenerTotalMascotas(Long id) {
         try {
             return pacienteClient.obtenerTotalMascotasPorCliente(id);

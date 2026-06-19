@@ -24,7 +24,7 @@ CREATE TABLE agenda.cita (
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
     motivo VARCHAR(255),
-    estado VARCHAR(30) DEFAULT 'PAGADA', 
+    estado VARCHAR(30) DEFAULT 'PAGADA',
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE agenda.comprobante_pago (
     monto_subtotal DECIMAL(10, 2) NOT NULL,
     monto_impuesto DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
     monto_total DECIMAL(10, 2) NOT NULL,
-    metodo_pago VARCHAR(30) NOT NULL,
+    metodo_pago VARCHAR(30) NOT NULL, 
     fecha_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_pago_cita FOREIGN KEY (id_cita) REFERENCES agenda.cita(id_cita) ON DELETE RESTRICT
 );
@@ -67,16 +67,16 @@ INSERT INTO agenda.horario_atencion (id_veterinario, dia_semana, hora_inicio, ho
 (1, 'VIERNES',   '14:00:00', '19:00:00', TRUE, 60);
 
 INSERT INTO agenda.cita (codigo_cita, id_mascota, id_veterinario, fecha, hora, motivo, estado, fecha_creacion) VALUES
-('CITA-001', 1, 1, '2026-05-25', '09:12:00', 'Servicio de Cita Médica Especializada', 'COMPLETADA', '2026-05-24 18:00:00'),
-('CITA-002', 2, 1, '2026-05-25', '15:15:00', 'Control de Vacunas Anual', 'COMPLETADA', '2026-05-24 19:30:00'),
+('CITA-001', 1, 1, '2026-05-25', '09:00:00', 'Servicio de Cita Médica Especializada', 'COMPLETADA', '2026-05-24 18:00:00'),
+('CITA-002', 2, 1, '2026-05-25', '11:00:00', 'Control de Vacunas Anual', 'COMPLETADA', '2026-05-24 19:30:00'),
 ('CITA-003', 1, 1, '2026-06-10', '10:00:00', 'Consulta General por malestar', 'PAGADA', '2026-06-09 08:15:00'),
 ('CITA-004', 2, 2, '2026-06-16', '16:00:00', 'Cirugía menor - Esterilización', 'PAGADA', '2026-06-15 14:00:00');
 
 INSERT INTO agenda.comprobante_pago (id_cita, id_cliente, tipo_documento, codigo_comprobante, monto_subtotal, monto_impuesto, monto_total, metodo_pago, fecha_pago) VALUES
 (1, 4, 'BOLETA', 'B001-000241', 67.80,  12.20, 80.00,  'TARJETA_DEBITO', '2026-05-25 09:12:00'),
-(2, 4, 'BOLETA', 'B001-000242', 67.80,  12.20, 80.00,  'EFECTIVO',       '2026-05-25 15:15:00'),
-(4, 4, 'BOLETA', 'B001-000243', 296.61, 53.39, 350.00, 'TRANSFERENCIA', '2026-06-16 16:00:00'),
-(3, 7, 'FACTURA', 'F001-000089', 101.69, 18.31, 120.00, 'YAPE_PLIN',     '2026-06-10 10:30:00');
+(2, 5, 'BOLETA', 'B001-000242', 67.80,  12.20, 80.00,  'EFECTIVO',       '2026-05-25 15:15:00'),
+(4, 5, 'BOLETA', 'B001-000243', 296.61, 53.39, 350.00, 'TRANSFERENCIA', '2026-06-16 16:00:00'),
+(3, 4, 'FACTURA', 'F001-000089', 101.69, 18.31, 120.00, 'YAPE_PLIN',     '2026-06-10 10:30:00');
 
 SELECT * FROM agenda.comprobante_pago;
 

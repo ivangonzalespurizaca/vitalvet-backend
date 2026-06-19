@@ -48,6 +48,7 @@ public class JwtUtil {
 
             var vet = persona.getVeterinario();
             claims.put("numColegiatura", vet.getNumColegiatura());
+            claims.put("idVeterinario", vet.getIdVeterinario());
 
             if (vet.getEspecialidad() != null) {
                 claims.put("especialidad", vet.getEspecialidad().getNombreEspecialidad());

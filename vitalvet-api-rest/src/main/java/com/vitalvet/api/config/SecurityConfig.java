@@ -27,6 +27,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/paciente/mascota/public/**").permitAll()
                         .requestMatchers("/api/paciente/mascota/interno/**").permitAll()
                         .requestMatchers("/api/paciente/consulta/cita/interno/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);

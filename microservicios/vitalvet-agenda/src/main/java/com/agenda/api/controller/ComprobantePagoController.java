@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/agenda/comprobantes")
@@ -36,13 +38,22 @@ public class ComprobantePagoController {
         ));
     }
 
-    @GetMapping("/mis-comprobantes/{idCliente}")
+    @GetMapping("/mis-comprobantes")
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<ApiResponse<ComprobanteClienteResponse>> obtenerMisComprobantes(
-            @PathVariable("idCliente") Long idCliente,
+            Authentication authentication,
             @RequestParam(value = "tipo", required = false) String tipo,
             @RequestParam(value = "inicio", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
             @RequestParam(value = "fin", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin){
+
+        Long idCliente = null;
+
+        if (authentication.getDetails() instanceof Map<?, ?> claims) {
+            Object idObject = claims.containsKey("idPersona") ? claims.get("idPersona") : claims.get("idpersona");
+            if (idObject != null) {
+                idCliente = Long.valueOf(idObject.toString());
+            }
+        }
 
         ComprobanteClienteResponse response = comprobanteService.obtenerComprobantesPorCliente(
                 idCliente, tipo, inicio, fin);

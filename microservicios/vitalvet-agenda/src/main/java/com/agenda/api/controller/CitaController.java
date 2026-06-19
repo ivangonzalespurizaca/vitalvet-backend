@@ -12,10 +12,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/agenda/cita")
@@ -56,16 +58,35 @@ public class CitaController {
     }
 
     @GetMapping("/panel")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'VETERINARIO', 'CLIENTE')")
     public ResponseEntity<ApiResponse<List<CitaPanelResponse>>> obtenerPanelCitas(
             @RequestParam(value = "estado", required = false) TipoEstadoCita estado,
-            @RequestParam(value = "buscar", required = false) String buscar) {
+            @RequestParam(value = "buscar", required = false) String buscar,
+            Authentication authentication) {
 
-        List<CitaPanelResponse> panel = citaService.listarCitasPanelPrincipal(estado, buscar);
+        Long idCliente = null;
+        Long idVeterinario = null;
 
+        boolean esCliente = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_CLIENTE"));
+
+        boolean esVeterinario = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_VETERINARIO"));
+
+        if (authentication.getDetails() instanceof Map<?, ?> claims) {
+            if (esCliente) {
+                Object idPersonaObj = claims.containsKey("idPersona") ? claims.get("idPersona") : claims.get("idpersona");
+                if (idPersonaObj != null) idCliente = Long.valueOf(idPersonaObj.toString());
+
+            } else if (esVeterinario) {
+                Object idVetObj = claims.containsKey("idVeterinario") ? claims.get("idVeterinario") : claims.get("idveterinario");
+                if (idVetObj != null) idVeterinario = Long.valueOf(idVetObj.toString());
+            }
+        }
+
+        List<CitaPanelResponse> panel = citaService.listarCitasPanelPrincipal(estado, buscar, idCliente, idVeterinario);
         return ResponseEntity.ok(new ApiResponse<>(
-                true,
-                "Estructura del panel de citas médicas cargada con éxito.",
-                panel
+                true, "Estructura del panel de citas médicas cargada con éxito.", panel
         ));
     }
 
@@ -85,5 +106,12 @@ public class CitaController {
                 mensaje,
                 detalle
         ));
+    }
+
+    @PutMapping("/interno/{idCita}/completar")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<Void> completarCitaInterno(@PathVariable("idCita") Long idCita) {
+        citaService.cambiarEstadoCompletadoInterno(idCita);
+        return ResponseEntity.ok().build();
     }
 }

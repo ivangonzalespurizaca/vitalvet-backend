@@ -11,11 +11,20 @@ import org.springframework.stereotype.Service;
 public class RazaServiceImpl extends ICRUDImpl<Raza, Long> implements RazaService {
 
     @Autowired
-    private RazaRepository repo;
+    private RazaRepository repository;
 
     @Override
     public JpaRepository<Raza, Long> getRepository() {
-        return repo;
+        return repository;
     }
 
+    @Override
+    public boolean existeDuplicado(String nombre, Long idEspecie) {
+        return repository.existsByNombreRazaIgnoreCaseAndEspecieIdEspecie(nombre, idEspecie);
+    }
+
+    @Override
+    public boolean existeDuplicadoActualizar(String nombre, Long idEspecie, Long idRaza) {
+        return repository.existsByNombreRazaIgnoreCaseAndEspecieIdEspecieAndIdRazaNot(nombre, idEspecie, idRaza);
+    }
 }
