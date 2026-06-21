@@ -10,8 +10,11 @@ public class VeterinarioResponseDTO {
     private String apellidos;
     private String email;
     private String nroColegiatura;
+    private Long idEspecialidad;
     private String especialidad;
     private String fotoUrl;
+    private String celular;
+    private String genero;
     private boolean activo;
 
     public String getNombreCompletoConEspecialidad() {

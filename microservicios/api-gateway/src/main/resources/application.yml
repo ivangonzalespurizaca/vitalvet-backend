@@ -70,6 +70,16 @@ spring:
               filters:
                 - AuthenticationFilter
 
+            # =========================
+            # MEDIA SERVICE
+            # =========================
+            - id: MICRO-MEDIA-PRIVATE
+              uri: lb://MICRO-USUARIO
+              predicates:
+                - Path=/api/media/**
+              filters:
+                - AuthenticationFilter
+
 server:
   port: 8091
 eureka:

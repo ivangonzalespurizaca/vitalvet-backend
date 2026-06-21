@@ -1,6 +1,5 @@
 package com.agenda.api.repository;
 
-import com.agenda.api.entity.Cita;
 import com.agenda.api.entity.ComprobantePago;
 import com.agenda.api.entity.enums.TipoComprobante;
 import com.agenda.api.repository.custom.ComprobanteRepositoryCustom;

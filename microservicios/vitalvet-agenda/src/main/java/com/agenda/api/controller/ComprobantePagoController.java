@@ -24,12 +24,11 @@ public class ComprobantePagoController {
     @GetMapping("/historial")
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'VETERINARIO')")
     public ResponseEntity<ApiResponse<ComprobanteAdminResponse>> consultarHistorial(
-            @RequestParam(value = "criterio", required = false) String criterio,
             @RequestParam(value = "tipo", required = false) String tipo,
             @RequestParam(value = "inicio", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
             @RequestParam(value = "fin", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
 
-        ComprobanteAdminResponse reporte = comprobanteService.obtenerHistorialComprobantes(criterio, tipo, inicio, fin);
+        ComprobanteAdminResponse reporte = comprobanteService.obtenerHistorialComprobantes(tipo, inicio, fin);
 
         return ResponseEntity.ok(new ApiResponse<>(
                 true,

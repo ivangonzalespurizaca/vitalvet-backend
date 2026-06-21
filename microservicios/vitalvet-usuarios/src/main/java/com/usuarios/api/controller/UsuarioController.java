@@ -1,5 +1,6 @@
 package com.usuarios.api.controller;
 
+import com.usuarios.api.config.JwtUtil;
 import com.usuarios.api.dto.PerfilRequestDTO;
 import com.usuarios.api.dto.PerfilResponseDTO;
 import com.usuarios.api.entity.Persona;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/usuario")
 public class UsuarioController {
@@ -31,9 +35,12 @@ public class UsuarioController {
     @Autowired
     private PersonaMapper personaMapper;
 
+    @Autowired
+    private JwtUtil jwtService;
+
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/actualizar")
-    public ResponseEntity<ApiResponse<?>> actualizarPerfil(
+    public ResponseEntity<ApiResponse<Map<String, Object>>> actualizarPerfil(
             @Valid @RequestBody PerfilRequestDTO perfilRequestDTO,
             Authentication authentication) throws Exception {
 
@@ -45,7 +52,14 @@ public class UsuarioController {
         personaService.actualizar(persona);
 
         PerfilResponseDTO responseDTO = personaMapper.toResponseDTO(persona, usuario);
-        ApiResponse<PerfilResponseDTO> response = new ApiResponse<>(true, "¡Perfil actualizado exitosamente!", responseDTO);
+
+        String nuevoToken = jwtService.generarToken(usuario);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("perfil", responseDTO);
+        responseData.put("token", nuevoToken);
+
+        ApiResponse<Map<String, Object>> response = new ApiResponse<>(true, "¡Perfil actualizado exitosamente!", responseData);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
