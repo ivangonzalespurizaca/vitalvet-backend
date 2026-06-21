@@ -18,7 +18,6 @@ public interface PersonaMapper {
     @Mapping(target = "rol", ignore = true)
     @Mapping(target = "dni", ignore = true)
     @Mapping(target = "activo", ignore = true)
-    @Mapping(target = "fotoUrl", ignore = true)
     void updatePersonaFromDto(PerfilRequestDTO dto, @MappingTarget Persona persona);
 
     @Mapping(target = "email", source = "usuario.email")

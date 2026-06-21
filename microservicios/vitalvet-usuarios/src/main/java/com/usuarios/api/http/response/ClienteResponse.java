@@ -10,5 +10,6 @@ public class ClienteResponse {
     private String email;
     private String dni;
     private String celular;
+    private String genero;
     private int totalMascotas;
 }

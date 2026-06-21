@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ComprobanteDTO {
+    private Long idComprobante;
     private String tipoComprobante;
     private String codigoComprobante;
     private LocalDateTime fechaPago;

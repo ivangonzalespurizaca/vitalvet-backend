@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,10 +26,11 @@ public class ComprobanteServiceImpl implements ComprobanteService {
     private UsuarioClient usuarioClient;
 
     @Override
-    public ComprobanteAdminResponse obtenerHistorialComprobantes(String criterio, String tipo, LocalDate inicio, LocalDate fin) {
+    public ComprobanteAdminResponse obtenerHistorialComprobantes(String tipo, LocalDate inicio, LocalDate fin) {
         TipoComprobante tipoEnum = (tipo != null && !tipo.isEmpty()) ? TipoComprobante.valueOf(tipo) : null;
 
-        List<ComprobantePago> resultados = comprobanteRepository.listarComprobantesConFiltros(null, tipoEnum, inicio, fin);
+        List<ComprobantePago> resultados = comprobanteRepository.listarComprobantesConFiltros(
+                null, tipoEnum, toStartOfDay(inicio), toEndOfDay(fin));
 
         long totalEmitidos = resultados.size();
         BigDecimal totalRecaudado = resultados.stream()
@@ -50,6 +52,7 @@ public class ComprobanteServiceImpl implements ComprobanteService {
             }
 
             return ComprobanteDTO.builder()
+                    .idComprobante(c.getIdComprobante())
                     .tipoComprobante(c.getTipoDocumento().name())
                     .codigoComprobante(c.getCodigoComprobante())
                     .fechaPago(c.getFechaPago())
@@ -74,7 +77,8 @@ public class ComprobanteServiceImpl implements ComprobanteService {
     public ComprobanteClienteResponse obtenerComprobantesPorCliente(Long idCliente, String tipo, LocalDate inicio, LocalDate fin) {
         TipoComprobante tipoEnum = (tipo != null && !tipo.isEmpty()) ? TipoComprobante.valueOf(tipo.toUpperCase().trim()) : null;
 
-        List<ComprobantePago> resultados = comprobanteRepository.listarComprobantesConFiltros(idCliente, tipoEnum, inicio, fin);
+        List<ComprobantePago> resultados = comprobanteRepository.listarComprobantesConFiltros(
+                idCliente, tipoEnum, toStartOfDay(inicio), toEndOfDay(fin));
 
         String nombreCompleto = "Cliente ID: " + idCliente;
         String dni = "";
@@ -93,6 +97,7 @@ public class ComprobanteServiceImpl implements ComprobanteService {
 
         List<ComprobanteDTO> contenidoDto = resultados.stream().map(c ->
                 ComprobanteDTO.builder()
+                        .idComprobante(c.getIdComprobante())
                         .tipoComprobante(c.getTipoDocumento().name())
                         .codigoComprobante(c.getCodigoComprobante())
                         .fechaPago(c.getFechaPago())
@@ -109,5 +114,13 @@ public class ComprobanteServiceImpl implements ComprobanteService {
         response.setContenido(contenidoDto);
 
         return response;
+    }
+
+    private LocalDateTime toStartOfDay(LocalDate date) {
+        return (date != null) ? date.atStartOfDay() : null;
+    }
+
+    private LocalDateTime toEndOfDay(LocalDate date) {
+        return (date != null) ? date.atTime(23, 59, 59) : null;
     }
 }
