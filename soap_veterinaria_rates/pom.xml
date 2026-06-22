@@ -11,7 +11,7 @@
         <relativePath/> </parent>
 
     <groupId>com.cibertec</groupId>
-    <artifactId>soap_clinica</artifactId>
+    <artifactId>soap_veterinaria</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
