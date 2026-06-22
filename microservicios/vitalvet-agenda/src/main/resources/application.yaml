@@ -15,7 +15,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/vitalvet_agenda?currentSchema=agenda
     username: ${DB_USER_POSTGRES}
-    password: ${DB_PASSWORD_POSTGRES}
+    password: admin
   messages:
     basename: messages
   application:
