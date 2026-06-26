@@ -1,5 +1,6 @@
 package com.agenda.api.dto;
 
+import com.agenda.api.entity.enums.TipoEstadoCita;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,6 @@ public class AgendaBloqueResponseDTO {
     private String razaMascota;
     private String nombrePropietario;
     private String dniPropietario;
+    private TipoEstadoCita estadoCita;
     private String motivoConsulta;
 }

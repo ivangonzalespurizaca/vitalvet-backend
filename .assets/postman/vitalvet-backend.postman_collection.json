@@ -79,7 +79,7 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:8080/api/paciente/mascota/editar/3",
+                  "raw": "http://localhost:8080/api/paciente/mascota/editar/1",
                   "protocol": "http",
                   "host": [
                     "localhost"
@@ -90,7 +90,7 @@
                     "paciente",
                     "mascota",
                     "editar",
-                    "3"
+                    "1"
                   ]
                 }
               },
@@ -222,7 +222,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"idCita\": 4,\r\n    \"pesoActual\": 4.50,\r\n    \"temperatura\": 38.40,\r\n    \"diagnostico\": \"Paciente felino Luna acude para control general y actualización de su esquema de vacunación. A la exploración clínica presenta constantes fisiológicas normales, buena condición corporal y mucosas sanas. No se observan signos de ectoparásitos ni anomalías palpables.\",\r\n    \"recomendaciones\": \"Mantener la alimentación habitual balanceada. Observar la zona de la inyección por si presenta inflamación leve en las próximas 24 horas. Asegurar acceso a agua limpia y fresca.\",\r\n    \"vacunas\": [\r\n        {\r\n            \"idVacuna\": 4,\r\n            \"proximaDosis\": \"\",\r\n            \"nroDosis\": \"Refuerzo Anual\"\r\n        }\r\n    ]\r\n}",
+                  "raw": "{\r\n    \"idCita\": 8,\r\n    \"pesoActual\": 4.50,\r\n    \"temperatura\": 38.40,\r\n    \"diagnostico\": \"Paciente felino Luna acude para control general y actualización de su esquema de vacunación. A la exploración clínica presenta constantes fisiológicas normales, buena condición corporal y mucosas sanas. No se observan signos de ectoparásitos ni anomalías palpables.\",\r\n    \"recomendaciones\": \"Mantener la alimentación habitual balanceada. Observar la zona de la inyección por si presenta inflamación leve en las próximas 24 horas. Asegurar acceso a agua limpia y fresca.\",\r\n    \"vacunas\": [\r\n        {\r\n            \"idVacuna\": 4,\r\n            \"proximaDosis\": \"\",\r\n            \"nroDosis\": \"Refuerzo Anual\"\r\n        }\r\n    ]\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -230,7 +230,7 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:8080/api/paciente/consulta/mascota/2/registrar",
+                  "raw": "http://localhost:8080/api/paciente/consulta/mascota/3/registrar",
                   "protocol": "http",
                   "host": [
                     "localhost"
@@ -241,7 +241,7 @@
                     "paciente",
                     "consulta",
                     "mascota",
-                    "2",
+                    "3",
                     "registrar"
                   ]
                 }
@@ -500,7 +500,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"nombreEspecie\": \"Aves Exóticas\",\r\n    \"activo\": true\r\n}",
+                  "raw": "{\r\n    \"nombreEspecie\": \"Aves Exóticas\",\r\n    \"activo\": false\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -520,6 +520,38 @@
                     "especie",
                     "actualizar",
                     "3"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Listar Especies Activas",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{jwt_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/paciente/especie/listar-activos",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "paciente",
+                    "especie",
+                    "listar-activos"
                   ]
                 }
               },
@@ -627,7 +659,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"nombreVacuna\": \"Triple Felina R-1\",\r\n    \"descripcion\": \"Inmunización básica anual con refuerzo para gatos.\",\r\n    \"activo\": false\r\n}",
+                  "raw": "{\r\n    \"nombreVacuna\": \"Triple Felina R-20\",\r\n    \"descripcion\": \"Inmunización básica anual con refuerzo para gatos.\",\r\n    \"activo\": false\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -635,7 +667,7 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:8080/api/paciente/vacuna/actualizar/3",
+                  "raw": "http://localhost:8080/api/paciente/vacuna/actualizar/2",
                   "protocol": "http",
                   "host": [
                     "localhost"
@@ -646,7 +678,39 @@
                     "paciente",
                     "vacuna",
                     "actualizar",
-                    "3"
+                    "2"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Listar Vacunas Activos",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{jwt_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/paciente/vacuna/listar-activos",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "paciente",
+                    "vacuna",
+                    "listar-activos"
                   ]
                 }
               },
@@ -747,7 +811,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"nombreRaza\": \"Gato Egipcio\",\r\n    \"idEspecie\": 2,\r\n    \"activo\": false\r\n}",
+                  "raw": "{\r\n    \"nombreRaza\": \"Gat\",\r\n    \"idEspecie\": 2,\r\n    \"activo\": false\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -755,7 +819,7 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:8080/api/paciente/raza/actualizar/3",
+                  "raw": "http://localhost:8080/api/paciente/raza/actualizar/1",
                   "protocol": "http",
                   "host": [
                     "localhost"
@@ -766,7 +830,39 @@
                     "paciente",
                     "raza",
                     "actualizar",
-                    "3"
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Listar Razas Activos",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{jwt_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/paciente/raza/listar-activos",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "paciente",
+                    "raza",
+                    "listar-activos"
                   ]
                 }
               },
@@ -874,7 +970,7 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "http://localhost:8091/api/agenda/cita/detalle/4",
+                      "raw": "http://localhost:8091/api/agenda/cita/detalle/3",
                       "protocol": "http",
                       "host": [
                         "localhost"
@@ -885,7 +981,7 @@
                         "agenda",
                         "cita",
                         "detalle",
-                        "4"
+                        "3"
                       ]
                     }
                   },
@@ -1106,7 +1202,7 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "http://localhost:8091/api/agenda/comprobantes/historial?inicio=2026-06-01&fin=2026-06-30",
+                      "raw": "http://localhost:8091/api/agenda/comprobantes/historial?inicio=2026-06-01&tipo=BOLETA",
                       "protocol": "http",
                       "host": [
                         "localhost"
@@ -1124,8 +1220,8 @@
                           "value": "2026-06-01"
                         },
                         {
-                          "key": "fin",
-                          "value": "2026-06-30"
+                          "key": "tipo",
+                          "value": "BOLETA"
                         }
                       ]
                     }
@@ -1161,6 +1257,35 @@
                         "mis-comprobantes"
                       ]
                     }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Dashboard Admin",
+              "item": [
+                {
+                  "name": "Obtener Dashboard Admin",
+                  "request": {
+                    "method": "GET",
+                    "header": []
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Obtener Dashboard Vet",
+                  "request": {
+                    "method": "GET",
+                    "header": []
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Obtener Dashboard Cliente",
+                  "request": {
+                    "method": "GET",
+                    "header": []
                   },
                   "response": []
                 }
@@ -1260,7 +1385,7 @@
                     "header": [],
                     "body": {
                       "mode": "raw",
-                      "raw": "/*{\r\n    \"email\" : \"jorge.perez@gmail.com\",\r\n    \"contrasenia\" : \"cliente123\"\r\n}\r\n*/\r\n/*{\r\n    \"email\" : \"ana.gomez@vitalvet.com\",\r\n    \"contrasenia\" : \"vet123\"\r\n}\r\n*/\r\n{\r\n    \"email\" : \"ivangonzalespurizaca@gmail.com\",\r\n    \"contrasenia\" : \"admin123\"\r\n}\r\n",
+                      "raw": "/*{\r\n    \"email\" : \"jorge.perez@gmail.com\",\r\n    \"contrasenia\" : \"cliente123\"\r\n}\r\n*/\r\n\r\n{\r\n    \"email\" : \"ana.gomez@vitalvet.com\",\r\n    \"contrasenia\" : \"vet123\"\r\n}\r\n/*\r\n{\r\n    \"email\" : \"ivangonzalespurizaca@gmail.com\",\r\n    \"contrasenia\" : \"admin123\"\r\n}\r\n*/",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -1291,7 +1416,7 @@
                     "header": [],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\r\n  \"datosCliente\": {\r\n    \"email\": \"mendozaa@gmail.com\",\r\n    \"contrasenia\": \"cliente123\",\r\n    \"nombres\": \"Luis Alberto\",\r\n    \"apellidos\": \"Mendoza Peralta\",\r\n    \"dni\": \"95874525\",\r\n    \"celular\": \"951753462\",\r\n    \"genero\": \"MASCULINO\"\r\n  },\r\n  \"datosMascota\": {\r\n    \"nombreMascota\": \"Firulais\",\r\n    \"idRaza\": 2,\r\n    \"sexo\": \"MACHO\",\r\n    \"fechaNacimiento\": \"2024-05-20\"\r\n  }\r\n}",
+                      "raw": "{\r\n  \"datosCliente\": {\r\n    \"email\": \"measdeefq@gmail.com\",\r\n    \"contrasenia\": \"cliente123\",\r\n    \"nombres\": \"Luis Alberto\",\r\n    \"apellidos\": \"Mendoza Peralta\",\r\n    \"dni\": \"37485768\",\r\n    \"celular\": \"951753462\",\r\n    \"genero\": \"MASCULINO\"\r\n  },\r\n  \"datosMascota\": {\r\n    \"nombreMascota\": \"Chester\",\r\n    \"idRaza\": 2,\r\n    \"sexo\": \"MACHO\",\r\n    \"fechaNacimiento\": \"2024-05-20\"\r\n  }\r\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -1387,12 +1512,12 @@
                       }
                     },
                     "url": {
-                      "raw": "http://localhost:8092/api/cliente/registro-rapido",
+                      "raw": "http://localhost:8091/api/cliente/registro-rapido",
                       "protocol": "http",
                       "host": [
                         "localhost"
                       ],
-                      "port": "8092",
+                      "port": "8091",
                       "path": [
                         "api",
                         "cliente",
@@ -1492,17 +1617,17 @@
                           "type": "file",
                           "uuid": "b55f5585-c939-4feb-a3f7-443e528a98d9",
                           "contentType": "multipart/form-data",
-                          "src": "/D:/OneDrive - CIBERTEC/Escritorio/Imagenes/husky-7729044_640.jpg"
+                          "src": "/D:/OneDrive - CIBERTEC/Escritorio/Imagenes/csm_el_origen_del_perro_3cc21c0da1.webp"
                         }
                       ]
                     },
                     "url": {
-                      "raw": "http://localhost:8092/api/media/perfil/upload",
+                      "raw": "http://localhost:8091/api/media/perfil/upload",
                       "protocol": "http",
                       "host": [
                         "localhost"
                       ],
-                      "port": "8092",
+                      "port": "8091",
                       "path": [
                         "api",
                         "media",
@@ -1535,7 +1660,7 @@
                     "header": [],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\r\n    \"nombres\": \"Oscar Ivan\",\r\n    \"apellidos\": \"Gonzales Purizaca\",\r\n    \"celular\": \"999888715\",\r\n    \"fotoUrl\": \"https://res.cloudinary.com/dfid8iuf3/image/upload/v1771809505/nueva_foto_tesis2.jpg\"\r\n}",
+                      "raw": "{\r\n    \"nombres\": \"Oscar Ivan\",\r\n    \"apellidos\": \"Gonzales Purizaca\",\r\n    \"celular\": \"999888715\",\r\n    \"fotoUrl\": \"https://res.cloudinary.com/dfid8iuf3/image/upload/v1771809505/actualizado.jpg\"\r\n}\r\n\r\n",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -1929,6 +2054,38 @@
                         "especialidad",
                         "actualizar",
                         "3"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Listar Especialidades Activas",
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{jwt_token}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "http://localhost:8091/api/usuario/especialidad/listar-activos",
+                      "protocol": "http",
+                      "host": [
+                        "localhost"
+                      ],
+                      "port": "8091",
+                      "path": [
+                        "api",
+                        "usuario",
+                        "especialidad",
+                        "listar-activos"
                       ]
                     }
                   },

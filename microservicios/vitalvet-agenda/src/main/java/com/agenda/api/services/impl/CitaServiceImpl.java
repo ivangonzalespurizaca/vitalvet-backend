@@ -315,6 +315,7 @@ public class CitaServiceImpl extends ICRUDImpl<Cita, Long> implements CitaServic
                         .razaMascota(infoCita.getRazaMascota())
                         .nombrePropietario(infoCita.getNombrePropietario())
                         .motivoConsulta(infoCita.getMotivo())
+                        .estadoCita(infoCita.getEstado())
                         .build();
             } else {
                 String horaFormato = slot.getHora().toString() + (slot.getHora().getHour() < 12 ? " AM" : " PM");

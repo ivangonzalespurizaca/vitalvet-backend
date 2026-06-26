@@ -8,7 +8,7 @@ CREATE SCHEMA agenda;
 CREATE TABLE agenda.horario_atencion (
     id_horario BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     id_veterinario BIGINT NOT NULL,
-    dia_semana VARCHAR(20) NOT NULL,
+    dia_semana VARCHAR(20) NOT NULL, 
     hora_inicio TIME NOT NULL,
     hora_fin TIME NOT NULL,
     activo BOOLEAN DEFAULT TRUE,
@@ -35,7 +35,7 @@ CREATE TABLE agenda.comprobante_pago (
     id_comprobante BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     id_cita BIGINT NOT NULL UNIQUE,
     id_cliente BIGINT NOT NULL,
-    tipo_documento VARCHAR(30) NOT NULL DEFAULT 'RECIBO_INTERNO', 
+    tipo_documento VARCHAR(30) NOT NULL DEFAULT 'RECIBO_INTERNO',
     codigo_comprobante VARCHAR(50) NOT NULL UNIQUE,
     monto_subtotal DECIMAL(10, 2) NOT NULL,
     monto_impuesto DECIMAL(10, 2) NOT NULL DEFAULT 0.00,

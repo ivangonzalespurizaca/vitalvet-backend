@@ -1,3 +1,4 @@
+
 DROP SCHEMA IF EXISTS pacientes CASCADE;
 CREATE SCHEMA pacientes;
 
@@ -26,7 +27,7 @@ CREATE TABLE pacientes.mascota (
     id_cliente BIGINT NOT NULL,
     nombre_mascota VARCHAR(255) NOT NULL,
     id_raza BIGINT NOT NULL,
-    sexo VARCHAR(20) NOT NULL,
+    sexo VARCHAR(20) NOT NULL, -- 🌟 CAMBIADO: De tipo nativo a VARCHAR
     fecha_nacimiento DATE,
     peso_actual DECIMAL(5, 2) DEFAULT 0.00,
     foto_url VARCHAR(255),
@@ -59,7 +60,7 @@ CREATE TABLE pacientes.vacuna_aplicada (
     fecha_aplicacion DATE,
     proxima_dosis DATE,
     nro_dosis VARCHAR(50) DEFAULT '1ra Dosis',
-    estado VARCHAR(30) DEFAULT 'APLICADA', 
+    estado VARCHAR(30) DEFAULT 'APLICADA', -- 🌟 CAMBIADO: De tipo nativo a VARCHAR
     CONSTRAINT fk_vacuna_mascota FOREIGN KEY (id_mascota) REFERENCES pacientes.mascota(id_mascota) ON DELETE CASCADE,
     CONSTRAINT fk_vacuna_catalogo FOREIGN KEY (id_vacuna) REFERENCES pacientes.vacuna(id_vacuna) ON DELETE RESTRICT,
     CONSTRAINT fk_vacuna_consulta FOREIGN KEY (id_consulta) REFERENCES pacientes.consulta(id_consulta) ON DELETE SET NULL
@@ -96,8 +97,8 @@ INSERT INTO pacientes.vacuna (nombre_vacuna, descripcion, activo) VALUES
 ('Leucemia Felina', 'Protege contra el virus de la Leucemia Felina (FeLV).', true);
 
 INSERT INTO pacientes.mascota (codigo_mascota, id_cliente, nombre_mascota, id_raza, sexo, fecha_nacimiento, peso_actual, foto_url, activo) VALUES
-('MAS-100001', 4, 'Firulais', 1, 'MACHO', '2024-03-15', 25.50, 'https://images.unsplash.com/photo-1543466835-00a7907e9de1', true),
-('MAS-100002', 5, 'Luna', 10, 'HEMBRA', '2025-01-10', 4.20, 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba', true);
+('MAS-100001', 4, 'Firulais', 1, 'MACHO', '2024-03-15', 25.50, 'https://res.cloudinary.com/dfid8iuf3/image/upload/v1782253518/vitalvet/perfiles/mj8iljiihseqo6mzdsau.jpg', true),
+('MAS-100002', 5, 'Luna', 10, 'HEMBRA', '2025-01-10', 4.20, 'https://res.cloudinary.com/dfid8iuf3/image/upload/v1777487266/gatobeng_kdcoro.webp', true);
 
 -- Inserción de Consultas Clínicas
 INSERT INTO pacientes.consulta (id_cita, id_veterinario, peso_actual, temperatura, diagnostico, recomendaciones) VALUES
